@@ -1,4 +1,6 @@
-<?php include('../PHP/RabbitMQClient.php') ?>
+<?php 
+session_start();
+?>
 <!doctype html>
 <html lang="en">
 
@@ -22,7 +24,7 @@
         <div class="row col-md-12">
             <div class="regForm">
                <h1>Registration Form</h1>
-               <form class="" onsubmit="return ValidateRegistration()" action="registration.php" method="post">
+               <form class="" onsubmit="return ValidateRegistration()" action="testRabbitMQRegister.php" method="post">
                 <div class="form-group">
                     <label for="First Name"></label>
                     <input id="firstName" type="text" class="form-control" name="firstName" placeholder="First Name">
