@@ -5,11 +5,11 @@
 
 
 session_start();
-require_once('../../RabbitMQ/path.inc');
-require_once('../../RabbitMQ/get_host_info.inc');
-require_once('../../RabbitMQ/rabbitMQLib.inc');
+require_once('../SeedFiles/path.inc');
+require_once('../SeedFiles/get_host_info.inc');
+require_once('../SeedFiles/rabbitMQLib.inc');
 
-$client = new rabbitMQClient("../../RabbitMQ/testRabbitMQ.ini","testServer");
+$client = new rabbitMQClient("../SeedFiles/RabbitMQ-DB.ini","testServer");
 if (isset($argv[1]))
 {
   $msg = $argv[1];
@@ -40,8 +40,8 @@ echo $argv[0]." END".PHP_EOL;
 if ($response ==1){
 
 	$_SESSION["username"]= $_POST["username"];
-	header("Location:landing.html");
+	header("Location: ../HTML-CSSJS/landing.html");
 }else{
-	header("Location:login.html");
+	header("Location: ../HTML-CSSJS/login.html");
 }
 ?>
