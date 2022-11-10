@@ -37,7 +37,7 @@
                         <h4 class="mt-1 mb-5 pb-1"></h4>
                       </div>
       
-                      <form method="POST"  action="testRabbitMQClient.php">
+                      <form onsubmit="return validateLogin()" method="POST"  action="../PHP/RabbitMQClient.php">
                         <p>Login to your account</p>
       
                         <div class="form-outline mb-4">
@@ -52,13 +52,13 @@
                         </div>
       
                         <div class="text-center pt-1 mb-5 pb-1">
-				<button type="submit">Login</button>
+				                  <button type="submit">Login</button>
                         </div>
       
-		      </form>
-                        <div class="d-flex align-items-center justify-content-center pb-4">
-                          <p class="mb-0 me-2">Don't have an account?</p>
-			  <form method="POST" action"register.html">
+		                  </form>
+                          <div class="d-flex align-items-center justify-content-center pb-4">
+                            <p class="mb-0 me-2">Don't have an account?</p>
+			                <form method="POST" action="registration.php">
                           <button id="createNew" onclick="createNewUsr()" type="button" class="btn btn-outline-danger">Create new</button>
                         </div>
       

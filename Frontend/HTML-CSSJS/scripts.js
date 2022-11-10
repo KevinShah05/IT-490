@@ -28,7 +28,7 @@ function validateLogin(){
 //Create New User Button
 function createNewUsr(){
     document.getElementById("createNew").onclick;
-    location.href = "registration.html";
+    location.href = "registration.php";
 }
 
 //Send Login Credentials

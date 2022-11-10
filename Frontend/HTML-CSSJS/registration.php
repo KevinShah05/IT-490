@@ -24,7 +24,7 @@ session_start();
         <div class="row col-md-12">
             <div class="regForm">
                <h1>Registration Form</h1>
-               <form class="" onsubmit="return ValidateRegistration()" action="testRabbitMQRegister.php" method="post">
+               <form class="" onsubmit="return ValidateRegistration()" action="registration.php" method="post">
                 <div class="form-group">
                     <label for="First Name"></label>
                     <input id="firstName" type="text" class="form-control" name="firstName" placeholder="First Name">
@@ -60,7 +60,7 @@ session_start();
               <div class="form-check form-check-inline">
                 <input class="form-check-input" type="radio" name="inlineRadioOptions" id="maleGender"
                   value="option2" />
-                <label class="form-check-label" for="maleGender">Male</label>
+                <label class="form-check-label" for="maleGender">Male</label>==
               </div>-->
               <div class="form-group">
                   <label for="Password"></label>
