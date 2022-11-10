@@ -18,10 +18,4 @@
         return $connection;
     }
     
-
-
-
-
-
-
 ?>
