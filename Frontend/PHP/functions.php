@@ -1,10 +1,10 @@
 <?php
 
     //Required Files
-    require_once('../rabbitmqphp_example/path.inc');
-    require_once('../rabbitmqphp_example/get_host_info.inc');
-    require_once('../rabbitmqphp_example/rabbitMQLib.inc');
-    require_once('rabbitMQClient.php');
+    require_once('../../RabbitMQ/path.inc');
+    require_once('../../RabbitMQ/get_host_info.inc');
+    require_once('../../RabbitMQ/rabbitMQLib.inc');
+    require_once('../../RabbitMQ/testRabbitMQClient.php');
 
     //Check is user is logged in and if not send them to login page
     function gateway(){

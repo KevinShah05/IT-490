@@ -1,4 +1,5 @@
 <?php 
+include('testRabbitMQClient.php');
 session_start();
 ?>
 <!doctype html>
@@ -24,7 +25,10 @@ session_start();
         <div class="row col-md-12">
             <div class="regForm">
                <h1>Registration Form</h1>
-               <form class="" onsubmit="return ValidateRegistration()" action="testRabbitMQRegister.php" method="post">
+
+               <!---<form class="" onsubmit="return ValidateRegistration()" action="testRabbitMQRegister.php" method="post">---->
+               <form method="post" action="registration.php">
+
                 <div class="form-group">
                     <label for="First Name"></label>
                     <input id="firstName" type="text" class="form-control" name="firstName" placeholder="First Name">
@@ -35,7 +39,7 @@ session_start();
                 </div>
                 <div class="form-group">
                   <label for="" class="form-label"></label>
-                  <input id="email" type="email" class="form-control" name="" id="" aria-describedby="emailHelpId" placeholder="user@mail.com">
+                  <input id="email" type="email" class="form-control" name="email" id="" aria-describedby="emailHelpId" placeholder="user@mail.com">
                 </div>
                 <div class="form-group">
                   <label for="User Name"></label>
@@ -67,7 +71,10 @@ session_start();
                   <input id="password" type="password" class="form-control" name="Password" placeholder="Password">
               </div>
               <div class="d-grid gap-4">
-                <button type="button" value="submit" name="" id="register" class="btn btn-primary">Submit</button>
+                <!---<button type="button" value="submit" name="" id="register" class="btn btn-primary">Submit</button>--->
+
+                <button type="submit" class="btn" name="reg_user">Register</button>
+
               </div>
             </div> 
                 

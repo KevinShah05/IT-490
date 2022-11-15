@@ -1,8 +1,8 @@
 <?php
 
-require_once('path.inc');
-require_once('get_host_info.inc');
-require_once('rabbitMQLib.inc');
+require_once('../RabbitMQ/path.inc');
+require_once('../RabbitMQ/get_host_info.inc');
+require_once('../RabbitMQ/rabbitMQLib.inc');
 require_once('functionsDB.php');
 
 
@@ -46,11 +46,11 @@ require_once('functionsDB.php');
     }
 
     //creating a new server
-    $server = new rabbitMQServer('rabbitMQ_db.ini', 'testserver');
+    $server = new rabbitMQServer('rabbitMQ_db.ini', 'testServer');
     
     //processes the request sent by client
     $server->process_requests('requestProcessor');
-    
-    //exit();
+    echo "dbListener END".PHP_EOL;
+    exit();
 
 ?>

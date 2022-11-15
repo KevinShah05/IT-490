@@ -8,7 +8,7 @@
         $pass = 'fefefefe';
         $dbname = 'yfoodDatabase';
         
-        $connection = mysql_connect($hostname, $user, $pass, $dbname);
+        $connection = mysqli_connect($hostname, $user, $pass, $dbname);
         
         if (!$connection){
             echo "Unable to connect to database: ".$connection->connect_errno.PHP_EOL;

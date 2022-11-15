@@ -1,3 +1,5 @@
+<?php include('testRabbitMQClient.php');?>
+
 <!doctype html>
 <html lang="en">
 
@@ -34,10 +36,10 @@
                       <div class="text-center">
                         <img src= "../Images/yFoodsLogo1.png"
                           style="width: 185px;" alt="logo">
-                        <h4 class="mt-1 mb-5 pb-1"></h4>
+                        <h4 class="mt-1 mb-5 pb-1"></h4> 
                       </div>
       
-                      <form method="POST"  action="testRabbitMQClient.php">
+                      <form method="post" action="login.php">
                         <p>Login to your account</p>
       
                         <div class="form-outline mb-4">
@@ -52,14 +54,17 @@
                         </div>
       
                         <div class="text-center pt-1 mb-5 pb-1">
-				<button type="submit">Login</button>
+				                <button type="submit" name="login_user">Login</button>
                         </div>
       
-		      </form>
+		                  </form>
                         <div class="d-flex align-items-center justify-content-center pb-4">
-                          <p class="mb-0 me-2">Don't have an account?</p>
-			  <form method="POST" action"register.html">
-                          <button id="createNew" onclick="createNewUsr()" type="button" class="btn btn-outline-danger">Create new</button>
+                          
+                        <p class="mb-0 me-2">Don't have an account? 
+                            <a href="registration.php">Register</a>
+                          </p>
+			  <!---form method="POST" action"registeration.php">
+                          <button id="createNew" onclick="createNewUsr()" type="button" class="btn btn-outline-danger" name="create_user">Create new</button>--->
                         </div>
       
                       </form>
