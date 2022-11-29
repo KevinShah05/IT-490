@@ -2,14 +2,16 @@
 
 namespace OldSound\RabbitMqBundle\Tests\Command;
 
-abstract class BaseCommandTest extends \PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+abstract class BaseCommandTest extends TestCase
 {
     protected $application;
     protected $definition;
     protected $helperSet;
     protected $command;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->application = $this->getMockBuilder('Symfony\\Component\\Console\\Application')
             ->disableOriginalConstructor()

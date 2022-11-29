@@ -4,8 +4,9 @@ namespace OldSound\RabbitMqBundle\Tests\RabbitMq;
 
 use OldSound\RabbitMqBundle\RabbitMq\RpcServer;
 use PhpAmqpLib\Message\AMQPMessage;
+use PHPUnit\Framework\TestCase;
 
-class RpcServerTest extends \PHPUnit_Framework_TestCase
+class RpcServerTest extends TestCase
 {
     public function testProcessMessageWithCustomSerializer()
     {
@@ -17,14 +18,14 @@ class RpcServerTest extends \PHPUnit_Framework_TestCase
         $message = $this->getMockBuilder('\PhpAmqpLib\Message\AMQPMessage')
             ->setMethods( array('get'))
             ->getMock();
-        $message->delivery_info = array(
-            'channel' => $this->getMockBuilder('\PhpAmqpLib\Channel\AMQPChannel')
+        $message->setChannel(
+            $this->getMockBuilder('\PhpAmqpLib\Channel\AMQPChannel')
                 ->setMethods(array())->setConstructorArgs(array())
                 ->setMockClassName('')
                 ->disableOriginalConstructor()
-                ->getMock(),
-            'delivery_tag' => null
+                ->getMock()
         );
+        $message->setDeliveryTag(0);
         $server->setCallback(function() {
             return 'message';
         });
@@ -38,4 +39,3 @@ class RpcServerTest extends \PHPUnit_Framework_TestCase
         $server->processMessage($message);
     }
 }
-

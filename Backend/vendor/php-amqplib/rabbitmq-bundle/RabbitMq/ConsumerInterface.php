@@ -26,10 +26,14 @@ interface ConsumerInterface
      */
     const MSG_REJECT = -1;
 
+    /**
+     * Flag for consumers that wants to handle ACKs on their own
+     */
+    const MSG_ACK_SENT = -2;
 
     /**
      * @param AMQPMessage $msg The message
-     * @return mixed false to reject and requeue, any other value to acknowledge
+     * @return int|bool One of ConsumerInterface::MSG_* constants according to callback outcome, or false otherwise.
      */
     public function execute(AMQPMessage $msg);
 }

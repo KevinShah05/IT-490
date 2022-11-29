@@ -4,11 +4,12 @@ namespace OldSound\RabbitMqBundle\RabbitMq;
 
 use OldSound\RabbitMqBundle\Provider\ConnectionParametersProviderInterface;
 use PhpAmqpLib\Connection\AbstractConnection;
+use PhpAmqpLib\Connection\AMQPSocketConnection;
 use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 
 class AMQPConnectionFactory
 {
-    /** @var \ReflectionClass */
+    /** @var string */
     private $class;
 
     /** @var array */
@@ -24,6 +25,7 @@ class AMQPConnectionFactory
         'ssl_context'        => null,
         'keepalive'          => false,
         'heartbeat'          => 0,
+        'hosts'              => []
     );
 
     /**
@@ -43,8 +45,17 @@ class AMQPConnectionFactory
         $this->class = $class;
         $this->parameters = array_merge($this->parameters, $parameters);
         $this->parameters = $this->parseUrl($this->parameters);
+
+        foreach ($this->parameters['hosts'] as $key => $hostParameters) {
+            if (!isset($hostParameters['url'])) {
+                continue;
+            }
+
+            $this->parameters['hosts'][$key] = $this->parseUrl($hostParameters);
+        }
+
         if (is_array($this->parameters['ssl_context'])) {
-            $this->parameters['ssl_context'] = ! empty($this->parameters['ssl_context'])
+            $this->parameters['context'] = ! empty($this->parameters['ssl_context'])
                 ? stream_context_create(array('ssl' => $this->parameters['ssl_context']))
                 : null;
         }
@@ -57,25 +68,26 @@ class AMQPConnectionFactory
      * Creates the appropriate connection using current parameters.
      *
      * @return AbstractConnection
+     * @throws \Exception
      */
     public function createConnection()
     {
-        return new $this->class(
-            $this->parameters['host'],
-            $this->parameters['port'],
-            $this->parameters['user'],
-            $this->parameters['password'],
-            $this->parameters['vhost'],
-            false,      // insist
-            'AMQPLAIN', // login_method
-            null,       // login_response
-            'en_US',    // locale
-            $this->parameters['connection_timeout'],
-            $this->parameters['read_write_timeout'],
-            $this->parameters['ssl_context'],
-            $this->parameters['keepalive'],
-            $this->parameters['heartbeat']
-        );
+        if (isset($this->parameters['constructor_args']) && is_array($this->parameters['constructor_args'])) {
+            $constructorArgs = array_values($this->parameters['constructor_args']);
+            return new $this->class(...$constructorArgs);
+        }
+
+        $hosts = $this->parameters['hosts'] ?: [$this->parameters];
+        $options = $this->parameters;
+        unset($options['hosts']);
+
+        if ($this->class == AMQPSocketConnection::class || is_subclass_of($this->class, AMQPSocketConnection::class)) {
+            $options['read_timeout'] = $options['read_timeout'] ?? $this->parameters['read_write_timeout'];
+            $options['write_timeout'] = $options['write_timeout'] ?? $this->parameters['read_write_timeout'];
+        }
+
+        // No need to unpack options, they will be handled inside connection classes
+        return $this->class::create_connection($hosts, $options);
     }
 
     /**
@@ -93,7 +105,7 @@ class AMQPConnectionFactory
 
         $url = parse_url($parameters['url']);
 
-        if ($url === false || !isset($url['scheme']) || $url['scheme'] !== 'amqp') {
+        if ($url === false || !isset($url['scheme']) || !in_array($url['scheme'], ['amqp', 'amqps'], true)) {
             throw new InvalidConfigurationException('Malformed parameter "url".');
         }
 

@@ -2,15 +2,18 @@
 
 namespace OldSound\RabbitMqBundle\Tests\DependencyInjection;
 
+use OldSound\RabbitMqBundle\DependencyInjection\OldSoundRabbitMqExtension;
+use OldSound\RabbitMqBundle\RabbitMq\ConsumerInterface;
+use OldSound\RabbitMqBundle\RabbitMq\ProducerInterface;
+use PHPUnit\Framework\TestCase;
+use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
-use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
-use OldSound\RabbitMqBundle\DependencyInjection\OldSoundRabbitMqExtension;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
 use Symfony\Component\DependencyInjection\Reference;
 
-class OldSoundRabbitMqExtensionTest extends \PHPUnit_Framework_TestCase
+class OldSoundRabbitMqExtensionTest extends TestCase
 {
     public function testFooConnectionDefinition()
     {
@@ -35,6 +38,7 @@ class OldSoundRabbitMqExtensionTest extends \PHPUnit_Framework_TestCase
             'heartbeat' => 0,
             'use_socket' => false,
             'url' => '',
+            'hosts' => [],
         ), $factory->getArgument(1));
         $this->assertEquals('%old_sound_rabbit_mq.connection.class%', $definition->getClass());
     }
@@ -64,6 +68,7 @@ class OldSoundRabbitMqExtensionTest extends \PHPUnit_Framework_TestCase
             'heartbeat' => 0,
             'use_socket' => false,
             'url' => '',
+            'hosts' => [],
         ), $factory->getArgument(1));
         $this->assertEquals('%old_sound_rabbit_mq.connection.class%', $definition->getClass());
     }
@@ -91,6 +96,7 @@ class OldSoundRabbitMqExtensionTest extends \PHPUnit_Framework_TestCase
             'heartbeat' => 0,
             'use_socket' => false,
             'url' => '',
+            'hosts' => [],
         ), $factory->getArgument(1));
         $this->assertEquals('%old_sound_rabbit_mq.lazy.connection.class%', $definition->getClass());
     }
@@ -118,6 +124,7 @@ class OldSoundRabbitMqExtensionTest extends \PHPUnit_Framework_TestCase
             'heartbeat' => 0,
             'use_socket' => false,
             'url' => '',
+            'hosts' => [],
         ), $factory->getArgument(1));
         $this->assertEquals('%old_sound_rabbit_mq.connection.class%', $definition->getClass());
     }
@@ -138,6 +145,51 @@ class OldSoundRabbitMqExtensionTest extends \PHPUnit_Framework_TestCase
         $definiton = $container->getDefinition('old_sound_rabbit_mq.connection.lazy_socket');
         $this->assertTrue($container->has('old_sound_rabbit_mq.connection_factory.lazy_socket'));
         $this->assertEquals('%old_sound_rabbit_mq.lazy.socket_connection.class%', $definiton->getClass());
+    }
+
+    public function testClusterConnectionDefinition()
+    {
+        $container = $this->getContainer('test.yml');
+
+        $this->assertTrue($container->has('old_sound_rabbit_mq.connection.cluster_connection'));
+        $definition = $container->getDefinition('old_sound_rabbit_mq.connection.cluster_connection');
+        $this->assertTrue($container->has('old_sound_rabbit_mq.connection_factory.cluster_connection'));
+        $factory = $container->getDefinition('old_sound_rabbit_mq.connection_factory.cluster_connection');
+        $this->assertEquals(['old_sound_rabbit_mq.connection_factory.cluster_connection', 'createConnection'], $definition->getFactory());
+        $this->assertEquals([
+            'hosts' => [
+                [
+                    'host' => 'cluster_host',
+                    'port' => 111,
+                    'user' => 'cluster_user',
+                    'password' => 'cluster_password',
+                    'vhost' => '/cluster',
+                    'url' => ''
+                ],
+                [
+                    'host' => 'localhost',
+                    'port' => 5672,
+                    'user' => 'guest',
+                    'password' => 'guest',
+                    'vhost' => '/',
+                    'url' => 'amqp://cluster_url_host:cluster_url_pass@host:10000/cluster_url_vhost'
+                ]
+            ],
+            'host' => 'localhost',
+            'port' => 5672,
+            'user' => 'guest',
+            'password' => 'guest',
+            'vhost' => '/',
+            'lazy' => false,
+            'connection_timeout' => 3,
+            'read_write_timeout' => 3,
+            'ssl_context' => array(),
+            'keepalive' => false,
+            'heartbeat' => 0,
+            'use_socket' => false,
+            'url' => '',
+        ], $factory->getArgument(1));
+        $this->assertEquals('%old_sound_rabbit_mq.connection.class%', $definition->getClass());
     }
 
     public function testFooBinding()
@@ -261,11 +313,52 @@ class OldSoundRabbitMqExtensionTest extends \PHPUnit_Framework_TestCase
                             'declare'     => false,
                         )
                     )
+                ),
+                array(
+                    'setDefaultRoutingKey',
+                    array('')
+                ),
+                array(
+                    'setContentType',
+                    array('text/plain')
+                ),
+                array(
+                    'setDeliveryMode',
+                    array(2)
                 )
             ),
             $definition->getMethodCalls()
         );
         $this->assertEquals('My\Foo\Producer', $definition->getClass());
+    }
+
+    public function testProducerArgumentAliases()
+    {
+        /** @var ContainerBuilder $container */
+        $container = $this->getContainer('test.yml');
+
+        if (!method_exists($container, 'registerAliasForArgument')) {
+            // don't test if autowiring arguments functionality is not available
+            return;
+        }
+
+        // test expected aliases
+        $expectedAliases = array(
+            ProducerInterface::class . ' $fooProducer' => 'old_sound_rabbit_mq.foo_producer_producer',
+            'My\Foo\Producer $fooProducer' => 'old_sound_rabbit_mq.foo_producer_producer',
+            ProducerInterface::class . ' $fooProducerAliasedProducer' => 'old_sound_rabbit_mq.foo_producer_aliased_producer',
+            'My\Foo\Producer $fooProducerAliasedProducer' => 'old_sound_rabbit_mq.foo_producer_aliased_producer',
+            ProducerInterface::class . ' $defaultProducer' => 'old_sound_rabbit_mq.default_producer_producer',
+            '%old_sound_rabbit_mq.producer.class% $defaultProducer' => 'old_sound_rabbit_mq.default_producer_producer',
+        );
+
+        foreach($expectedAliases as $id => $target) {
+            $this->assertTrue($container->hasAlias($id), sprintf('Container should have %s alias for autowiring support.', $id));
+
+            $alias = $container->getAlias($id);
+            $this->assertEquals($target, (string)$alias, sprintf('Autowiring for %s should use %s.', $id, $target));
+            $this->assertFalse($alias->isPublic(), sprintf('Autowiring alias for %s should be private', $id));
+        }
     }
 
     /**
@@ -313,6 +406,18 @@ class OldSoundRabbitMqExtensionTest extends \PHPUnit_Framework_TestCase
                             'declare'     => false,
                         )
                     )
+                ),
+                array(
+                    'setDefaultRoutingKey',
+                    array('')
+                ),
+                array(
+                    'setContentType',
+                    array('text/plain')
+                ),
+                array(
+                    'setDeliveryMode',
+                    array(2)
                 )
             ),
             $definition->getMethodCalls()
@@ -366,11 +471,42 @@ class OldSoundRabbitMqExtensionTest extends \PHPUnit_Framework_TestCase
                 array(
                     'setCallback',
                     array(array(new Reference('foo.callback'), 'execute'))
+                ),
+                array(
+                    'setTimeoutWait',
+                    array(3)
                 )
             ),
             $definition->getMethodCalls()
         );
         $this->assertEquals('%old_sound_rabbit_mq.consumer.class%', $definition->getClass());
+    }
+
+    public function testConsumerArgumentAliases()
+    {
+        /** @var ContainerBuilder $container */
+        $container = $this->getContainer('test.yml');
+
+        if (!method_exists($container, 'registerAliasForArgument')) {
+            // don't test if autowiring arguments functionality is not available
+            return;
+        }
+
+        $expectedAliases = array(
+            ConsumerInterface::class . ' $fooConsumer' => 'old_sound_rabbit_mq.foo_consumer_consumer',
+            '%old_sound_rabbit_mq.consumer.class% $fooConsumer' => 'old_sound_rabbit_mq.foo_consumer_consumer',
+            ConsumerInterface::class . ' $defaultConsumer' => 'old_sound_rabbit_mq.default_consumer_consumer',
+            '%old_sound_rabbit_mq.consumer.class% $defaultConsumer' => 'old_sound_rabbit_mq.default_consumer_consumer',
+            ConsumerInterface::class . ' $qosTestConsumer' => 'old_sound_rabbit_mq.qos_test_consumer_consumer',
+            '%old_sound_rabbit_mq.consumer.class% $qosTestConsumer' => 'old_sound_rabbit_mq.qos_test_consumer_consumer'
+        );
+        foreach($expectedAliases as $id => $target) {
+            $this->assertTrue($container->hasAlias($id), sprintf('Container should have %s alias for autowiring support.', $id));
+
+            $alias = $container->getAlias($id);
+            $this->assertEquals($target, (string)$alias, sprintf('Autowiring for %s should use %s.', $id, $target));
+            $this->assertFalse($alias->isPublic(), sprintf('Autowiring alias for %s should be private', $id));
+        }
     }
 
     public function testDefaultConsumerDefinition()
@@ -441,7 +577,7 @@ class OldSoundRabbitMqExtensionTest extends \PHPUnit_Framework_TestCase
             }
         }
 
-        $this->assertInternalType('array', $setQosParameters);
+        $this->assertIsArray($setQosParameters);
         $this->assertEquals(
             array(
                 1024,
@@ -517,6 +653,10 @@ class OldSoundRabbitMqExtensionTest extends \PHPUnit_Framework_TestCase
                     array(
                         new Reference('foo.queues_provider')
                     )
+                ),
+                array(
+                    'setTimeoutWait',
+                    array(3)
                 )
             ),
             $definition->getMethodCalls()

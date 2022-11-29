@@ -19,8 +19,6 @@ use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
  */
 class PrototypeConfigurator extends AbstractServiceConfigurator
 {
-    const FACTORY = 'load';
-
     use Traits\AbstractTrait;
     use Traits\ArgumentTrait;
     use Traits\AutoconfigureTrait;
@@ -37,12 +35,14 @@ class PrototypeConfigurator extends AbstractServiceConfigurator
     use Traits\ShareTrait;
     use Traits\TagTrait;
 
-    private $loader;
-    private $resource;
-    private $exclude;
-    private $allowParent;
+    public const FACTORY = 'load';
 
-    public function __construct(ServicesConfigurator $parent, PhpFileLoader $loader, Definition $defaults, $namespace, $resource, $allowParent)
+    private PhpFileLoader $loader;
+    private string $resource;
+    private ?array $excludes = null;
+    private bool $allowParent;
+
+    public function __construct(ServicesConfigurator $parent, PhpFileLoader $loader, Definition $defaults, string $namespace, string $resource, bool $allowParent)
     {
         $definition = new Definition();
         if (!$defaults->isPublic() || !$defaults->isPrivate()) {
@@ -65,22 +65,22 @@ class PrototypeConfigurator extends AbstractServiceConfigurator
     {
         parent::__destruct();
 
-        if ($this->loader) {
-            $this->loader->registerClasses($this->definition, $this->id, $this->resource, $this->exclude);
+        if (isset($this->loader)) {
+            $this->loader->registerClasses($this->definition, $this->id, $this->resource, $this->excludes);
         }
-        $this->loader = null;
+        unset($this->loader);
     }
 
     /**
-     * Excludes files from registration using a glob pattern.
+     * Excludes files from registration using glob patterns.
      *
-     * @param string $exclude
+     * @param string[]|string $excludes
      *
      * @return $this
      */
-    final public function exclude($exclude)
+    final public function exclude(array|string $excludes): static
     {
-        $this->exclude = $exclude;
+        $this->excludes = (array) $excludes;
 
         return $this;
     }

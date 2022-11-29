@@ -11,28 +11,30 @@
 
 namespace Symfony\Component\DependencyInjection\Exception;
 
+use Psr\Container\NotFoundExceptionInterface;
+
 /**
  * This exception is thrown when a non-existent parameter is used.
  *
  * @author Fabien Potencier <fabien@symfony.com>
  */
-class ParameterNotFoundException extends InvalidArgumentException
+class ParameterNotFoundException extends InvalidArgumentException implements NotFoundExceptionInterface
 {
-    private $key;
-    private $sourceId;
-    private $sourceKey;
-    private $alternatives;
-    private $nonNestedAlternative;
+    private string $key;
+    private ?string $sourceId;
+    private ?string $sourceKey;
+    private array $alternatives;
+    private ?string $nonNestedAlternative;
 
     /**
-     * @param string      $key                  The requested parameter key
-     * @param string      $sourceId             The service id that references the non-existent parameter
-     * @param string      $sourceKey            The parameter key that references the non-existent parameter
-     * @param \Exception  $previous             The previous exception
-     * @param string[]    $alternatives         Some parameter name alternatives
-     * @param string|null $nonNestedAlternative The alternative parameter name when the user expected dot notation for nested parameters
+     * @param string          $key                  The requested parameter key
+     * @param string|null     $sourceId             The service id that references the non-existent parameter
+     * @param string|null     $sourceKey            The parameter key that references the non-existent parameter
+     * @param \Throwable|null $previous             The previous exception
+     * @param string[]        $alternatives         Some parameter name alternatives
+     * @param string|null     $nonNestedAlternative The alternative parameter name when the user expected dot notation for nested parameters
      */
-    public function __construct($key, $sourceId = null, $sourceKey = null, \Exception $previous = null, array $alternatives = [], $nonNestedAlternative = null)
+    public function __construct(string $key, string $sourceId = null, string $sourceKey = null, \Throwable $previous = null, array $alternatives = [], string $nonNestedAlternative = null)
     {
         $this->key = $key;
         $this->sourceId = $sourceId;
@@ -82,14 +84,14 @@ class ParameterNotFoundException extends InvalidArgumentException
         return $this->sourceKey;
     }
 
-    public function setSourceId($sourceId)
+    public function setSourceId(?string $sourceId)
     {
         $this->sourceId = $sourceId;
 
         $this->updateRepr();
     }
 
-    public function setSourceKey($sourceKey)
+    public function setSourceKey(?string $sourceKey)
     {
         $this->sourceKey = $sourceKey;
 

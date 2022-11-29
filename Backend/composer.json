@@ -1,5 +1,5 @@
 {
     "require": {
-        "php-amqplib/rabbitmq-bundle": "*"
+        "php-amqplib/rabbitmq-bundle": "^2.11"
     }
 }

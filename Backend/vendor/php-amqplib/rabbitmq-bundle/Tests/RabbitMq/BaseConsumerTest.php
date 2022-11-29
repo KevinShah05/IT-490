@@ -3,15 +3,16 @@
 namespace OldSound\RabbitMqBundle\Tests\RabbitMq;
 
 use OldSound\RabbitMqBundle\RabbitMq\BaseConsumer;
+use PHPUnit\Framework\TestCase;
 
-class BaseConsumerTest extends \PHPUnit_Framework_TestCase
+class BaseConsumerTest extends TestCase
 {
     /** @var BaseConsumer */
     protected $consumer;
 
-    protected function setUp()
+    protected function setUp(): void
     {
-        $amqpConnection =  $this->getMockBuilder('\PhpAmqpLib\Connection\AMQPConnection')
+        $amqpConnection = $this->getMockBuilder('\PhpAmqpLib\Connection\AMQPStreamConnection')
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -42,12 +43,5 @@ class BaseConsumerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(0, $this->consumer->getIdleTimeoutExitCode());
         $this->consumer->setIdleTimeoutExitCode(43);
         $this->assertEquals(43, $this->consumer->getIdleTimeoutExitCode());
-    }
-
-    public function testForceStopConsumer()
-    {
-        $this->assertAttributeEquals(false, 'forceStop', $this->consumer);
-        $this->consumer->forceStopConsumer();
-        $this->assertAttributeEquals(true, 'forceStop', $this->consumer);
     }
 }
