@@ -45,11 +45,6 @@ function validateRegistration(){
             alert("Username is required");
             return false;
         }
-    /*var birthday = document.getElementById("date").value;
-        if(birthday == ""){
-            alert("Your date of birth is required");
-            return false;
-        }*/
     var gender = document.getElementsByName("gender");
         if(!gender[0].checked && !gender[1].checked){
             alert("Gender Slection is required");
@@ -67,20 +62,69 @@ function validateRegistration(){
         }
 }
 
-/*var minimumAge = 18;
-function setAge(){
-    birthdate = new Date(document.getElementById("date").value);
-    var today = new Date();
-    var differ = Math.abs(today.getTime() - date.getTime());
-    var age = Math.ceil(differ / (1000*3600*24)) / 365;
-    var differ = (givendate.getFullYear()-birthdate.getFullYear());
-    return age;
+/*function bmiCalc(){
+    //var feet = document.getElementById(heightft).value;
+    var inch = document.getElementById('height').value;
+
+    //var inches = feet/12 + inch;
+    var cm = inch * 2.54;
+
+    var weight = document.getElementById('weight').value;
+    var kg = weight/2.2046;
+    var BMI = (kg/cm/cm) * 10000;
+    var display = document.getElementById("disBMI");
+    var retBMR = BMI;
+    display.innerHTML = '<div class="container"><h4 class="text-center form-control my-3 text-danger fs-4">Your BMI">'+Math.ceil(BMI)+'</span></h4></div>';
+    document.getElementById('disBMI').innerText= retBMR;
+    console.log(BMI);
+    
+    return BMI;
+    
 }
 
-function getAge(){
-    var age = setAge();
-    if(age<minimumAge){
-        alert("You must be at least 18 years of age to create an account!");
-        return false;
+
+function BMRcalculator(){
+
+  var age = document.getElementById("age").value;
+  var age = document.getElementById("height").value;
+  var age = document.getElementById("weight").value;
+  var age = document.getElementById("gender").value;
+
+  kg = weight * 0.45359237;
+  cm = height * 2.54;
+  BMR = null;
+
+
+    if (gender = "male")
+    {
+      BMR = 10 * kg + 6.25 * cm - 5 * age + 5;
     }
+    else if (gender == "female")
+    {
+      BMR = 10 * kg + 6.25 * cm - 5 * age - 161;
+    }
+    
+    return BMR;
+
+}*/
+
+//Fridge Search
+/*function getsource(id){
+    $.ajax({
+        url:"https://api.spoonacular.com/recipes/"+id+"/information?apiKey=22cd95b6f2msh56aa4218766ee17p1c066ejsn53b34fba64ac",
+        success: function(res){
+            document.getElementById("sourceLink").innerHTML=res.sourceUrl
+            document.getElementById("sourceLink").href=res.sourceUrl
+        }
+    })
+}
+
+function getrecipe(q){
+    $.ajax({
+        url:"https://api.spoonacular.com/recipes/search?apiKey=22cd95b6f2msh56aa4218766ee17p1c066ejsn53b34fba64ac&number1&query="+q,
+        success: function(res){
+            document.getElementById("output").innerHTML="<h1>"+res.results[0].title+"</h1><br><img src='"+res.baseUri+res.results[0].image+"'width='400' /><br> ready in"+res.results[0].readyInMinutes+" minutes"
+            getsource(res.results[0].id)
+        }
+    })
 }*/

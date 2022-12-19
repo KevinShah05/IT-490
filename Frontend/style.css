@@ -76,3 +76,16 @@ body
 {
     width: 100%;
 }
+
+/*#anime{
+    animation-duration: 3s;
+    animation-name: s;
+}
+@keyframes s{
+    from{
+        margin-top: 100%;
+    }
+    to{
+        margin-bottom: 0%;
+    }
+}*/
