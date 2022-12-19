@@ -1,0 +1,19 @@
+{
+    "require": {
+        "php-amqplib/php-amqplib": "^3.4",
+        "GIT_USER_ID/GIT_REPO_ID": "*@dev"
+    },
+
+    "repositories": [
+        {
+          "type": "vcs",
+          "url": "https://github.com/GIT_USER_ID/GIT_REPO_ID.git"
+        }
+    ]
+}
+
+    
+
+
+
+ 

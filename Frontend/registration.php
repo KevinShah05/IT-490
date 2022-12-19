@@ -45,7 +45,7 @@
               <!--<div class="form-group">
                   <label for="birthdate"></label>
                   <input id="date" type="date" class="form-control" name="birthdate" placeholder="Birthdate"/>
-              </div>-->
+              </div>
               <h6 class="mb-2 pb-1">Gender: </h6>                             
               <div class="form-check form-check-inline">
                 <input class="form-check-input" type="radio" name="gender" id="female"
@@ -56,7 +56,7 @@
                 <input class="form-check-input" type="radio" name="gender" id="male"
                   value="male" />
                 <label class="form-check-label" for="maleGender">Male</label>
-              </div>
+              </div>-->
               <div class="form-group">
                   <label for="Password"></label>
                   <input id="password" type="password" class="form-control" name="password" placeholder="Password"/>
