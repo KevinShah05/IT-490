@@ -2,7 +2,7 @@
 
 //Establishes connection to Main MySQL database
 function dbConnection(){
-    $connection = mysqli_connect('database-1.cluster-c8lwib2uf0za.us-east-1.rds.amazonaws.com', 'admin', 'fefefefe', 'yfoodAppDB');
+    $connection = mysqli_connect('database-1.c8lwib2uf0za.us-east-1.rds.amazonaws.com', 'admin', 'fefefefe', 'yfoodAppDB');
     if (mysqli_connect_errno())
     {
     echo "Failed to connect to MySQL: " . mysqli_connect_error();
