@@ -172,7 +172,6 @@ function displayBMR($username)
   
 
   $query = "SELECT * FROM `health` WHERE username = '$username'";
-
   $response = $conn->query($query);
   $data = [];
   while ($r = $response->fetch_assoc())
@@ -181,7 +180,9 @@ function displayBMR($username)
   };
   $data = array("BMR"=>$BMR);
   echo "\n BMR updated";
+
   return json_encode($data);
+
 }
 
 //function to addPreference
@@ -283,11 +284,13 @@ function doFood($username, $search)
   
 
 	for($i=0;$i<10;$i++){
-   
+    $ID = $json->results[$i]->id;
+    $json1 = recipeInformation($ID);
 
 		$result .= "<br>Recipe: ";
 		$result .= $json->results[$i]->title;	
-    $result .= "<br>Nutrients: ";
+		$result .= "<br>";
+		$result .= $json1->sourceUrl;
 		$result .= "<br>";
 		$result .= "<br>";
 	}
@@ -336,19 +339,56 @@ function whatsinyourfridge($username, $ingredient1, $ingredient2, $ingredient3, 
 	$result = "";
 
 	for($i=0;$i<10;$i++){
+    $ID = $json[$i]->id;
+    $json1 = recipeInformation($ID);
+    
 		$result .= "<br>Recipe: ";
 		$result .= $json[$i]->title;
     $result .= "<br>Used Ingredients: ";
     $result .= $json[$i]->usedIngredientCount;
-    $result .= "<br>Image: ";
-    $result .= $json[$i]->image;
 		$result .= "<br>";
-		$result .= "<br>";
+		$result .= $json1->sourceUrl;
+    $result .= "<br>";
+    $result .= "<br>";
 	}
 
       echo "\n\n\t***Show Profile***\n\n";
       return json_encode($result);
+      
+    
 
 }
 
+function recipeInformation($ID)
+{
+  $curl = curl_init();
+
+curl_setopt_array($curl, [
+	CURLOPT_URL => "https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/recipes/$ID/information",
+	CURLOPT_RETURNTRANSFER => true,
+	CURLOPT_FOLLOWLOCATION => true,
+	CURLOPT_ENCODING => "",
+	CURLOPT_MAXREDIRS => 10,
+	CURLOPT_TIMEOUT => 30,
+	CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+	CURLOPT_CUSTOMREQUEST => "GET",
+	CURLOPT_HTTPHEADER => [
+		"X-RapidAPI-Host: spoonacular-recipe-food-nutrition-v1.p.rapidapi.com",
+		"X-RapidAPI-Key: 364babad74msh34c0182e5c81dbep14bb3ejsne353a94b4d68"
+	],
+]);
+
+$response = curl_exec($curl);
+$err = curl_error($curl);
+
+curl_close($curl);
+
+if ($err) {
+	echo "cURL Error #:" . $err;
+} else {
+	 $json1 =json_decode($response);
+   echo "<br>";
+}
+return $json1;
+}
 ?>
