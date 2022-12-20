@@ -1,6 +1,5 @@
-<?php session_start(); 
-include('RabbitMQClient.php'); 
-?>
+<?php session_start();
+include('RabbitMQClient.php'); ?>
 
 <!doctype html>
 <html lang="en">
@@ -67,7 +66,7 @@ include('RabbitMQClient.php');
             </li>
             <li class="nav-item">
               <a class="nav-link" href="#" data-toggle="modal" data-target="#food-prefs">
-                Food Prefrences
+                Food Preferences
               </a>
             </li>
             <!--<li class="nav-item">
@@ -85,17 +84,16 @@ include('RabbitMQClient.php');
 </div>
   </div>
       </nav>
-
       <main class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
         <div class="row">
           <div class="col-sm-3 d-flex align-items-stretch">
             <div class="flip-card text-white bg-danger mb-3" id="bmiCard">
               <div class="flip-card-inner">
                 <div class="flip-card-front text-white bg-danger mb-3">
-                <h5 class="card-title">Making Progress</h5>
-                  <p class="card-text"> 
-                    <!--<span style="font-size: large; font-weight:bold;">Making Progress</span>--><br>
-                    <span style="font-size: medium; font-weight:bold;">Update your Health Info</span>
+                <h5 class="card-title">Made Progess</h5>
+                  <p class="card-text">
+                    <span style="font-size: large; font-weight:bold;">Update your Health Stats</span><br>
+                    <!--<span id="disCal" style="font-size: medium; font-weight:bold;">Daily Calories</span>-->
                   </p>
                 </div>
                 <div class="flip-card-back bg-danger">
@@ -104,23 +102,35 @@ include('RabbitMQClient.php');
                     <h5 style="color: black;">Made Some Progress?</h5> <br><br>
                     <p class="card-text">
                     <!--<form id="form1" name="updateBMR" method="POST">-->
-                    <button type="button" class="btn btn-outline-success" data-toggle="modal" data-target="#bmiForm">Veiw Your Stats!"</button>
+                    <button type="button" class="btn btn-outline-success" name="updateBMR" data-toggle="modal" data-target="#bmiForm">Update Your Stats!</button>
                     <!--</form>-->
                     </p>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
+          </div>        
+        <!--<script type="text/javascript">
+          $(document).ready(function(){
+              $.ajax({
+                url: 'landing.php',
+                type: 'GET',
+                success:function(response){
+                  var BMR= JSON.parse(response);
+                  $('#bmiDis').html(BMR[0].BMR);
+                }
+              })
+            })
+        </script>-->
         <div class="col-sm-9 d-flex align-items-stretch">
           <div class="flip-card text-white bg-danger mb-3 w-100" id="foodP">
             <div class="flip-card-inner">
             <div class="flip-card-front text-white bg-danger mb-3">
               <h5 class="card-title">Food Preferences</h5>
                 <p class="card-text">
-                  Favorite Cuisines:<span class="dietDis"><?php echo $_SESSION['foodpref'];?></span><br>
-                  Dietary Restrictions/Allergies:<span class="dietDis"><?php echo $_SESSION['diet-type'];?></span><br>
-                  Diet Type:<span class="dietDis"><?php echo $_SESSION['restrictions'];?></span><br>
+                <span class="dietDis" style="font-size: large; font-weight:bold;">Favorite Cuisines:<?php echo "<strong>".$_SESSION['foodpref']."</strong>";?></span><br>
+                <span class="dietDis" style="font-size: large; font-weight:bold;">Dietary Restrictions/Allergies:<?php echo "<strong>".$_SESSION['diet-type']."</strong>";?></span><br>
+                <span class="dietDis" style="font-size: large; font-weight:bold;">Diet Type:<?php echo "<strong>".$_SESSION['restrictions']."</strong>";?></span><br>
                 </p>
             </div>
             <div class="flip-card-back bg-danger">
@@ -135,28 +145,59 @@ include('RabbitMQClient.php');
         </div>
       </div>
       
-        <!--<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-            <div class="col-md-3">
-              <div id="bmiCard" class="card text-white bg-danger mb-3" style="width: 18rem">
-              <div class="card-header">
-                BMI & Daily Calories
-              </div>
-                <div class="card-body text-center">
-                   <p class="card-text">
-                    BMI: <br>
-                    Daily Calories: <br>
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>-->
-
+        
           <form id="searchFood" method="POST" action="landing.php">
-            <input class="form-control form-control-dark w-100" type="text" name="searchRecipe" placeholder="Search Foods Here"/>
+            <input class="form-control form-control-dark w-100" type="text" name="searchRecipe" placeholder="Search Foods Here"/><br>
             <input id="searchFood" name="searchFood" type="submit" class="btn btn-info right" value="Search Recipes!"/>
           </form>
-        <canvas class="my-4 w-100" id="myChart" width="900" height="380"></canvas>
-          
+          <br>
+          <br>
+        <p>
+          <h1>Set your Health Information & Food Preferences</h1>
+          <h3>1. Click on the BMI & Calorie Calculator to set health info</h3>
+          <h3>2. Click on Food Preferences to your prefered types.</h3>
+        </p>
+          <br>
+          <br>
+        <p>
+          <h1>Instructions for Recipe Search</h1>
+          <h3>1. Enter what you would like to eat in the above search bar</h3>
+          <h3>2. When you receive the results</h3>
+          <h3>3. Copy & Paste the link to veiw the recipe instructions</h3>
+          <h3>4. Click the back button, to come back to this page & search more recipes</h3>
+        </p>
+        <img src="Images/fridge.jpg">
+        <!--<canvas class="my-4 w-100" id="myChart" width="900" height="380"></canvas>-->
+        <br><br><br>
+        <p>
+          <h1>Instructions for Fridge Search</h1>
+          <h3>1. Enter up to 5 ingredients you have on hand</h3>
+          <h3>2. When you receive the results</h3>
+          <h3>3. Copy & Paste the link to view the recipe instructions</h3>
+          <h3>4. Click the back button, to come back to this page & search more recipes</h3>
+        </p>
+        
+        <!--<div id="searchDis">
+          <table id="myTable">
+            <tr>
+              <td id="rec">Recipe</td>
+            </tr>
+          </table>
+        </div>
+        <script type="text/javascript">
+          $(document).ready(function(){
+              $.ajax({
+                url: 'landing.php',
+                type: 'POST',
+                success:function(response){
+                  //var decode = json_decode(response);
+                  var search = JSON.parse(response);
+                  $('#rec').text(search[0].Recipe);
+                }
+              })
+            })
+        </script>-->
+        </div>
         <h2>Whats in your Fridge?</h2>
         <div id=fridgeForm>
         <div class="col-sm-12 d-flex align-items-stretch">
@@ -170,13 +211,26 @@ include('RabbitMQClient.php');
               <textarea id="ingredientArea" name="ingredient4" placeholder="Enter fifth ingredient"></textarea>
             </label><br>
             <input id="fridgeBTN" name="fridgesearch" class="btn btn-info right" type="submit" value="Search Recipes"/>
-            <!--<div id="frigeOutput"></div>
-            <a href="" id="sourceLink"></a>-->
+            <div id="frigeOutput"></div>
+            
           </form>
         </div>
       </div>
     </main>
-    
+    <!--<div id="fri"></div>
+    <script type="text/javascript">
+          $(document).ready(function(){
+              $.ajax({
+                url: 'RabbitMQClient.php',
+                type: 'POST',
+                success:function(response){
+                  //var decode = json_decode(response);
+                  var search = JSON.parse(response);
+                  $('#fri').html(search[0].Recipe);
+                }
+              })
+            })
+        </script>-->
    
   
 

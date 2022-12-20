@@ -114,7 +114,7 @@ if(isset($_POST['foodPrefs'])){
 		$_SESSION['foodpref'] = $request['foodpref'];
 		$_SESSION['diet-type'] = $request['diet-type'];
 		$_SESSION['restrictions'] = $request['restrictions'];
-		$_SESSION['json'] = json_decode($response);
+		//$_SESSION['json'] = json_decode($response);
 		header('location: landing.php');	
 	}
 	else{ 
@@ -123,7 +123,7 @@ if(isset($_POST['foodPrefs'])){
 }
 
 //Veiw Stats
-if (isset($_POST["updateBMR"])){
+/*if (isset($_POST["updateBMR"])){
 	$request = array();
 	$request['type'] = "updateBMR";
 	$request['username'] = $_SESSION["username"];
@@ -136,14 +136,14 @@ if (isset($_POST["updateBMR"])){
 	
 	if ($response==1){
 		echo "<strong>Stats Veiwed!</strong>";
-		$_SESSION['update'] = $request['update'];
-		$_SESSION['BMR'] = json_decode($response);
-		header('location: landing.php');	
+		//$_SESSION['update'] = $request['update'];
+		$_SESSION['json'] = $response;
+		//header('location: landing.php');	
 	}
 	else{ 
 		array_push($errors, "Viewing Stats Failed!"); 
 	}
-}
+}*/
 
 //Search Recipes
 if (isset($_POST['searchFood'])) {
@@ -157,8 +157,8 @@ if (isset($_POST['searchFood'])) {
 	print_r($response);
 
 	if ($response==1) {
-		echo 
-		$_SESSION['response'] = json_decode($response);
+		echo "<strong>Search Successful!</strong>";
+		//$_SESSION['json'] = json_decode($response);
 		//$_SESSION['message'] = json_decode($msg);
 		//header('location: landing.php');	
 	}
